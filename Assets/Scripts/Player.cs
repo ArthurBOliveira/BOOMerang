@@ -15,9 +15,14 @@ public class Player : MonoBehaviour
     public bool grounded;
     public bool boomerang;
 
+    private bool canDoubleJump;
+    public string direction;
+
     private void Start()
     {
+        direction = "right";
         boomerang = true;
+        canDoubleJump = false;
         rb2d = GetComponent<Rigidbody2D>();
     }
 
@@ -27,8 +32,11 @@ public class Player : MonoBehaviour
         rb2d.velocity = new Vector2(speed * Input.GetAxis("Horizontal"), rb2d.velocity.y);
 
         //Jump
-        if (grounded && Input.GetKeyDown(KeyCode.UpArrow))
+        if ((grounded || canDoubleJump) && Input.GetKeyDown(KeyCode.UpArrow))
+        {
+            canDoubleJump = false;
             rb2d.AddForce(Vector2.up * jump);
+        }
 
         //Boomerang
         if (Input.GetKeyDown(KeyCode.Space))
@@ -46,13 +54,22 @@ public class Player : MonoBehaviour
         {
             CallBoomerang();
         }
+
+        //Set up Direction
+        if (Input.GetKeyDown(KeyCode.RightArrow))
+            direction = "right";
+        if (Input.GetKeyDown(KeyCode.LeftArrow))
+            direction = "left";
+        if (Input.GetKeyDown(KeyCode.UpArrow))
+            direction = "up";
     }
 
     private void OnTriggerEnter2D(Collider2D collision)
     {
-        if(collision.gameObject.tag == "Boomerang")
+        if (collision.gameObject.tag == "Boomerang")
         {
             boomerang = true;
+            canDoubleJump = true;
             Destroy(collision.gameObject);
         }
     }
@@ -79,16 +96,31 @@ public class Player : MonoBehaviour
         if (hits.Length > 0)
         {
             grounded = true;
+            canDoubleJump = false;
         }
     }
 
     private void ThrowBoomerang()
     {
         boomerang = false;
+        Vector2 force = new Vector2();
 
         GameObject obj = Instantiate(boomerangObj, boomerangSpawner.transform.position, Quaternion.identity);
 
-        obj.GetComponent<Rigidbody2D>().AddForce(Vector2.right * boomerangSpeed);
+        switch (direction)
+        {
+            case "right":
+                force = Vector2.right * boomerangSpeed;
+                break;
+            case "left":
+                force = Vector2.left * boomerangSpeed;
+                break;
+            case "up":
+                force = Vector2.up * boomerangSpeed;
+                break;
+        }
+
+        obj.GetComponent<Rigidbody2D>().AddForce(force);
     }
 
     private void CallBoomerang()

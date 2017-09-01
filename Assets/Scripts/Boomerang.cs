@@ -27,7 +27,6 @@ public class Boomerang : MonoBehaviour
         boomerangSpeed = GameObject.FindGameObjectWithTag("Player").GetComponent<Player>().boomerangSpeed;
 
         x = player.transform.position.x;
-        y = player.transform.position.y;
     }
 
     private void Update()
@@ -37,7 +36,7 @@ public class Boomerang : MonoBehaviour
             switch (direction)
             {
                 case "right":
-                    if (!camingBack && transform.position.x > (x + 5))
+                    if (!camingBack && transform.position.x > (x + 6))
                     {
                         camingBack = true;
                         Vector2 force = new Vector2();
@@ -48,7 +47,7 @@ public class Boomerang : MonoBehaviour
                     }
                     break;
                 case "left":
-                    if (!camingBack && transform.position.x > (x - 5))
+                    if (!camingBack && transform.position.x < (x - 6))
                     {
                         camingBack = true;
                         Vector2 force = new Vector2();
@@ -57,18 +56,7 @@ public class Boomerang : MonoBehaviour
 
                         rb2d.AddForce(force * 2);
                     }
-                    break;
-                case "up":
-                    if (!camingBack && transform.position.y > (y + 5))
-                    {
-                        camingBack = true;
-                        Vector2 force = new Vector2();
-
-                        force = Vector2.down * boomerangSpeed;
-
-                        rb2d.AddForce(force * 2);
-                    }
-                    break;
+                    break;                
             }
         }
         else

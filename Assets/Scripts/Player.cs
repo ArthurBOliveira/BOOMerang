@@ -8,7 +8,8 @@ public class Player : MonoBehaviour
     public float boomerangSpeed;
 
     public GameObject boomerangObj;
-    public GameObject boomerangSpawner;
+    public GameObject boomerangSpawnerRight;
+    public GameObject boomerangSpawnerLeft;
 
     private Rigidbody2D rb2d;
 
@@ -60,8 +61,6 @@ public class Player : MonoBehaviour
             direction = "right";
         if (Input.GetKeyDown(KeyCode.LeftArrow))
             direction = "left";
-        if (Input.GetKeyDown(KeyCode.UpArrow))
-            direction = "up";
     }
 
     private void OnTriggerEnter2D(Collider2D collision)
@@ -105,22 +104,21 @@ public class Player : MonoBehaviour
         boomerang = false;
         Vector2 force = new Vector2();
 
-        GameObject obj = Instantiate(boomerangObj, boomerangSpawner.transform.position, Quaternion.identity);
+        GameObject obj;
 
         switch (direction)
         {
             case "right":
                 force = Vector2.right * boomerangSpeed;
+                obj = Instantiate(boomerangObj, boomerangSpawnerRight.transform.position, Quaternion.identity);
+                obj.GetComponent<Rigidbody2D>().AddForce(force);
                 break;
             case "left":
                 force = Vector2.left * boomerangSpeed;
+                obj = Instantiate(boomerangObj, boomerangSpawnerLeft.transform.position, Quaternion.identity);
+                obj.GetComponent<Rigidbody2D>().AddForce(force);
                 break;
-            case "up":
-                force = Vector2.up * boomerangSpeed;
-                break;
-        }
-
-        obj.GetComponent<Rigidbody2D>().AddForce(force);
+        }        
     }
 
     private void CallBoomerang()

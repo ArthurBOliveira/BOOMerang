@@ -4,23 +4,32 @@ using UnityEngine;
 
 public class Door : IInteractable
 {
-    public bool opened;
-
     private Animator animator;
+    private BoxCollider2D coll2D;
 
-    private void Start()
+    private void Awake()
     {
-        opened = false;
         animator = GetComponent<Animator>();
+        coll2D = GetComponent<BoxCollider2D>();
+
+        coll2D.enabled = false;
     }
 
     public override void Activate()
     {
         animator.SetTrigger("Open");
+        coll2D.enabled = true;
     }
 
     public override void Deactivate()
     {
         animator.SetTrigger("Close");
+        coll2D.enabled = false;
+    }
+
+    private void OnTriggerStay2D(Collider2D collision)
+    {
+        if (collision.tag == "Player" && Input.GetKeyDown(KeyCode.Space) || Input.GetKeyDown(KeyCode.UpArrow))
+            GameObject.FindGameObjectWithTag("Canvas").GetComponent<GameMenu>().Win();
     }
 }

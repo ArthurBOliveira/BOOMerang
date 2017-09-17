@@ -5,19 +5,24 @@ using UnityEngine;
 public class Boomerang : MonoBehaviour
 {
     public float boomerangSpeed;
-    private float x;
-    private float y;
+    public float gravityScale;
+    private float playerX;
 
     private bool camingBack;
     public bool backToPlayer;
+    public bool isMagic;
 
     private Rigidbody2D rb2d;
+    private CircleCollider2D coll2D;
+    private SpriteRenderer renderer;
     private GameObject player;
     private string direction;
 
     private void Awake()
     {
         rb2d = GetComponent<Rigidbody2D>();
+        coll2D = GetComponent<CircleCollider2D>();
+        renderer = GetComponent<SpriteRenderer>();
         player = GameObject.FindGameObjectWithTag("Player");
 
         direction = player.GetComponent<Player>().direction;
@@ -26,7 +31,11 @@ public class Boomerang : MonoBehaviour
         camingBack = false;
         boomerangSpeed = GameObject.FindGameObjectWithTag("Player").GetComponent<Player>().boomerangSpeed;
 
-        x = player.transform.position.x;
+        playerX = player.transform.position.x;
+        rb2d.gravityScale = 0;
+        coll2D.enabled = false;
+        //renderer.color = new Color(125, 0, 255, 255); //Purple
+        isMagic = true;
     }
 
     private void Update()
@@ -36,7 +45,7 @@ public class Boomerang : MonoBehaviour
             switch (direction)
             {
                 case "right":
-                    if (!camingBack && transform.position.x > (x + 6))
+                    if (!camingBack && transform.position.x > (playerX + 6))
                     {
                         camingBack = true;
                         Vector2 force = new Vector2();
@@ -45,9 +54,16 @@ public class Boomerang : MonoBehaviour
 
                         rb2d.AddForce(force * 2);
                     }
+                    if (!backToPlayer && transform.position.x < playerX)
+                    {
+                        rb2d.gravityScale = gravityScale;
+                        coll2D.enabled = true;
+                        //renderer.color = new Color(100, 100, 100, 255); //Gray
+                        isMagic = false;
+                    }
                     break;
                 case "left":
-                    if (!camingBack && transform.position.x < (x - 6))
+                    if (!camingBack && transform.position.x < (playerX - 6))
                     {
                         camingBack = true;
                         Vector2 force = new Vector2();
@@ -56,7 +72,14 @@ public class Boomerang : MonoBehaviour
 
                         rb2d.AddForce(force * 2);
                     }
-                    break;                
+                    if (!backToPlayer && transform.position.x > playerX)
+                    {
+                        rb2d.gravityScale = gravityScale;
+                        coll2D.enabled = true;
+                        //renderer.color = new Color(100, 100, 100, 255); //Gray
+                        isMagic = false;
+                    }
+                    break;
             }
         }
         else

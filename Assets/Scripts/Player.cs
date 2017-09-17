@@ -11,6 +11,8 @@ public class Player : MonoBehaviour
     public GameObject boomerangSpawnerRight;
     public GameObject boomerangSpawnerLeft;
 
+    public Vector3 position0;
+
     private Rigidbody2D rb2d;
 
     public bool grounded;
@@ -18,6 +20,15 @@ public class Player : MonoBehaviour
 
     private bool canDoubleJump;
     public string direction;
+
+    public void ResetPosition()
+    {
+        transform.position = position0;
+
+        GameObject.Destroy(GameObject.FindGameObjectWithTag("Boomerang"));
+
+        boomerang = true;
+    }
 
     private void Start()
     {
@@ -68,7 +79,7 @@ public class Player : MonoBehaviour
         if (collision.gameObject.tag == "Boomerang")
         {
             boomerang = true;
-            canDoubleJump = true;
+            //canDoubleJump = true;
             Destroy(collision.gameObject);
         }
     }
@@ -123,11 +134,21 @@ public class Player : MonoBehaviour
 
     private void CallBoomerang()
     {
-        try { GameObject.FindGameObjectWithTag("Boomerang").GetComponent<Boomerang>().backToPlayer = true; } catch (Exception e) { }
+        try
+        {
+            var boomerang = GameObject.FindGameObjectWithTag("Boomerang").GetComponent<Boomerang>();
+
+            if(boomerang.isMagic)
+                boomerang.backToPlayer = true;
+        }
+        catch (Exception e) { }
     }
 
     private void TeleportBoomerang()
     {
-        transform.position = GameObject.FindGameObjectWithTag("Boomerang").transform.position;
+        var boomerang = GameObject.FindGameObjectWithTag("Boomerang").GetComponent<Boomerang>();
+
+        if (boomerang.isMagic)
+            transform.position = GameObject.FindGameObjectWithTag("Boomerang").transform.position;
     }
 }

@@ -21,6 +21,8 @@ public class Switch : MonoBehaviour
     {
         if (collision.gameObject.tag == "Boomerang")
         {
+            if (!collision.gameObject.GetComponent<Boomerang>().isMagic) return;
+
             ActionActivating();
 
             StartCoroutine(Hold());

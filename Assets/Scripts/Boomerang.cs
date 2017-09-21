@@ -6,11 +6,13 @@ public class Boomerang : MonoBehaviour
 {
     public float boomerangSpeed;
     public float gravityScale;
+    public float limit;
     private float playerX;
 
     private bool camingBack;
     public bool backToPlayer;
     public bool isMagic;
+    public bool isTeleportable;
 
     private Rigidbody2D rb2d;
     private CircleCollider2D coll2D;
@@ -29,6 +31,7 @@ public class Boomerang : MonoBehaviour
 
         backToPlayer = false;
         camingBack = false;
+        isTeleportable = false;
         boomerangSpeed = GameObject.FindGameObjectWithTag("Player").GetComponent<Player>().boomerangSpeed;
 
         playerX = player.transform.position.x;
@@ -45,8 +48,9 @@ public class Boomerang : MonoBehaviour
             switch (direction)
             {
                 case "right":
-                    if (!camingBack && transform.position.x > (playerX + 6))
+                    if (!camingBack && transform.position.x > (playerX + limit))
                     {
+                        isTeleportable = true;
                         camingBack = true;
                         Vector2 force = new Vector2();
 
@@ -63,7 +67,7 @@ public class Boomerang : MonoBehaviour
                     }
                     break;
                 case "left":
-                    if (!camingBack && transform.position.x < (playerX - 6))
+                    if (!camingBack && transform.position.x < (playerX - limit))
                     {
                         camingBack = true;
                         Vector2 force = new Vector2();

@@ -148,7 +148,7 @@ public class Player : MonoBehaviour
     {
         var boomerang = GameObject.FindGameObjectWithTag("Boomerang").GetComponent<Boomerang>();
 
-        if (boomerang.isMagic)
+        if (boomerang.isMagic && boomerang.isTeleportable)
             transform.position = GameObject.FindGameObjectWithTag("Boomerang").transform.position;
     }
 }
